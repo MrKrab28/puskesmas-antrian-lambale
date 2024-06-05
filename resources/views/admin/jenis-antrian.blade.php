@@ -4,68 +4,140 @@
 @section('content')
     <div class="container-fluid content-inner mt-2">
         <div class="row">
+            <div class="col-sm-4">
+                <div class="card">
+
+                    @php
+                        $jenisAntrian = Request::get('jenis_antrian');
+                        $currentAntrian = App\Models\Antrian::where('status', 'dipanggil')
+                            ->where('jenis_antrian', $jenisAntrian)
+                            ->latest('updated_at')
+                            ->first();
+                        $jenis_antrian = $currentAntrian;
+                    @endphp
+                    @if ($jenis_antrian)
+                        <div class="card-body bg bg-primary rounded-pill">
+
+                            <h3 class=" text-light">Antrian Saat Ini</h3>
+                            <h3 class="text-center text-light">
+                                {{ strtoupper(Str::substr($jenis_antrian->jenis_antrian, 0, 1)) }}-{{ $jenis_antrian->no_antrian }}
+                            </h3>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-12">
                 <div class="card text-nowrap">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="header-title">
-                               {{--  @if ($antrian->jenis_antrian)
+                            {{--  @if ($antrian->jenis_antrian)
                             <h4 class="mb-0">Daftar Antrian Poli {{ strtoupper($antrian[0]->jenis_antrian) }}</h4>
                             @endif --}}
-                        @if (!empty($antrian) && count($antrian) > 0)
-                            <h4 class="mb-0">Daftar Antrian Poli {{ strtoupper($antrian[0]->jenis_antrian) }}</h4>
-                        @else
-                            <h4 class="mb-0">Tidak ada antrian</h4>
-                        @endif
+                            @if (!empty($antrian) && count($antrian) > 0)
+                                <h4 class="mb-0">Daftar Antrian Poli {{ strtoupper($antrian[0]->jenis_antrian) }}</h4>
+                            @else
+                                <h4 class="mb-0">Tidak ada antrian</h4>
+                            @endif
+                        </div>
+                        <div>
+                            @if ($antrian->contains('status', '!=', 'selesai'))
+                            <form action="{{ route('admin-antrian.updateStatus', Request::get('jenis_antrian')) }}"
+                                method="post" class="d-inline">
+                                @method('PUT')
+                                @csrf
+                                <button class="btn btn-success">Next Antrian</button>
+                            </form>
+                            @endif
+                            <button type="submit" class="btn btn-primary " data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">Tambah Data</button>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary " data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">Tambah Data</button>
-                </div>
-                <div class="card-body text-nowrap">
+                    <div class="card-body text-nowrap">
 
-                    <div class="table-reponsive">
-                        {{-- <table id="table" class="table table-striped mt-5" data-toggle="data-table"> --}}
-                        <table id="table" class="table table-hover mt-5" style="width: 100%">
-                            <thead>
-                                <tr>
-
-                                    <th>#</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>No Antrian</th>
-                                    <th>Status </th>
-
-
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach ($antrian as $antrian)
+                        <div class="table-reponsive">
+                            {{-- <table id="table" class="table table-striped mt-5" data-toggle="data-table"> --}}
+                            <table id="table" class="table table-hover mt-5" style="width: 100%">
+                                <thead>
                                     <tr>
 
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $antrian->user->nama }}</td>
-                                        <td>{{ strtoupper(Str::substr($antrian->jenis_antrian, 0, 1)) }}-{{ $antrian->no_antrian }}
-                                        </td>
-                                        <td class="Primary" >
-
-
-                                            <span class="badge @if($antrian->status == 'menunggu') bg-primary @elseif($antrian->status == 'dipanggil') bg-warning @else bg-success @endif">
-                                                {{ ucfirst($antrian->status) }}
-                                            </span>
-                                        </td>
-
+                                        <th>#</th>
+                                        <th>Nama Lengkap</th>
+                                        <th>No Antrian</th>
+                                        <th>Status </th>
 
 
                                     </tr>
-                                @endforeach
-                            </tbody>
+                                </thead>
+                                <tbody>
 
-                        </table>
+                                    @foreach ($antrian as $antrian)
+                                        <tr>
+
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $antrian->user->nama }}</td>
+                                            <td>{{ strtoupper(Str::substr($antrian->jenis_antrian, 0, 1)) }}-{{ $antrian->no_antrian }}
+                                            </td>
+                                            <td>
+                                                @if ($antrian->status == 'menunggu')
+                                                    <span
+                                                        class="badge rounded-pill text-bg-warning">{{ ucfirst($antrian->status) }}</span>
+                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="dipanggil"
+                                                            id="">
+                                                        <button
+                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @else btn-success @endif">
+                                                            {{ ucfirst($antrian->status) }}
+                                                        </button>
+                                                    </form> --}}
+                                                @endif
+                                                @if ($antrian->status == 'dipanggil')
+                                                    <span
+                                                        class="badge rounded-pill text-bg-primary">{{ ucfirst($antrian->status) }}</span>
+                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="selesai" id="">
+                                                        <button
+                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @elseif($antrian->status == 'selesai') btn-success @else btn-primary @endif">
+                                                            {{ ucfirst($antrian->status) }}
+                                                        </button>
+                                                    </form> --}}
+                                                @endif
+                                                @if ($antrian->status == 'selesai')
+                                                    <span
+                                                        class="badge rounded-pill text-bg-success">{{ ucfirst($antrian->status) }}</span>
+                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
+                                                        method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button
+                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @elseif($antrian->status == 'selesai') btn-success @else btn-primary @endif"
+                                                            disabled>
+                                                            {{ ucfirst($antrian->status) }}
+                                                        </button>
+                                                    </form> --}}
+                                                @endif
+                                            </td>
+
+
+
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
     </div>
 @endsection
 @push('modals')

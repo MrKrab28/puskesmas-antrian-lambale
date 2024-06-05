@@ -24,19 +24,21 @@ class AntrianController extends Controller
 
             return view('admin.jenis-antrian', [
                 'daftarUser' => User::all(),
-            'antrian' => $antrianByJenis,
+                'antrian' => $antrianByJenis,
 
             ]);
         }
         $data_antrian = [
-            'gigi' => Antrian::where('jenis_antrian', 'gigi')->orderBy('no_antrian')->get(),
+            'umum' => Antrian::where('jenis_antrian', 'umum')->orderBy('no_antrian')->get(),
             'kia' => Antrian::where('jenis_antrian', 'kia')->orderBy('no_antrian')->get(),
-            'umum' => Antrian::where('jenis_antrian', 'umum')->orderBy('no_antrian')->get()
+            'gigi' => Antrian::where('jenis_antrian', 'gigi')->orderBy('no_antrian')->get(),
         ];
 
+        $antrian = Antrian::all();
 
-
-        return view('admin.antrian', $data_antrian);
+        return view('admin.antrian', compact( [
+            'data_antrian','antrian'
+        ]));
     }
 
     public function store(Request $request)
@@ -54,5 +56,31 @@ class AntrianController extends Controller
         $antrian->save();
 
         return redirect()->back()->with('success', 'Nomor Antrian Berhasil Dibuat');
+    }
+
+    public function status(Antrian $antrian, Request $request)
+    {
+        // $statusBaru = $request->input('status');
+
+
+        //     $antrian->status = $statusBaru;
+        //     $antrian->update();
+
+        //     return redirect()->back();
+
+        $dipanggil = Antrian::where('jenis_antrian', $antrian->jenis_antrian)->where('status', 'dipanggil')->first();
+        if($dipanggil){
+
+        $dipanggil->status = 'selesai';
+        $dipanggil->update();
+        }
+
+        $menunggu = Antrian::where('jenis_antrian', $antrian->jenis_antrian)->where('status', 'menunggu')->first();
+        if ($menunggu) {
+            $menunggu->status = 'dipanggil';
+            $menunggu->update();
+        }
+
+        return redirect()->back()->with('success', 'Nomor Antrian Berhasil Diupdate');
     }
 }

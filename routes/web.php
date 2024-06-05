@@ -28,16 +28,16 @@ Route::post('authenticate', [AdminAuthController::class, 'authenticate'])->name(
 Route::post('register', [AdminAuthController::class, 'register'])->name('register');
 
 Route::group(['middleware' =>  'auth:admin'], function () {
-Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin-logout');
+    Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin-logout');
 
-Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-// PEGAWAI
-Route::get('pegawai', [AdminPegawaiController::class, 'index'])->name('pegawai-index');
-Route::post('pegawai/add', [AdminPegawaiController::class, 'store'])->name('pegawai-store');
-Route::get('pegawai/edit/{pegawai}', [AdminPegawaiController::class, 'edit'])->name('pegawai-edit');
-Route::put('pegawai/update/{pegawai}', [AdminPegawaiController::class, 'update'])->name('pegawai-update');
-Route::delete('pegawai/delete/{pegawai}', [AdminPegawaiController::class, 'delete'])->name('pegawai-delete');
+    // PEGAWAI
+    Route::get('pegawai', [AdminPegawaiController::class, 'index'])->name('pegawai-index');
+    Route::post('pegawai/add', [AdminPegawaiController::class, 'store'])->name('pegawai-store');
+    Route::get('pegawai/edit/{pegawai}', [AdminPegawaiController::class, 'edit'])->name('pegawai-edit');
+    Route::put('pegawai/update/{pegawai}', [AdminPegawaiController::class, 'update'])->name('pegawai-update');
+    Route::delete('pegawai/delete/{pegawai}', [AdminPegawaiController::class, 'delete'])->name('pegawai-delete');
 });
 
 // USER/PASIEN
@@ -51,3 +51,5 @@ Route::delete('user/delete/{user}', [AdminUserController::class, 'delete'])->nam
 // Admin antrian
 Route::get('admin-antrian', [AdminAntrianController::class, 'index'])->name('admin-antrian');
 route::post('add/admin-antrian', [AdminAntrianController::class, 'store'])->name('admin-antrian.store');
+// Route::put('antrian/{antrian}/ubah-status', [AdminAntrianController::class, 'status'])->name('ubah-status-antrian');
+Route::put('antrian/update/{antrian:jenis_antrian}', [AdminAntrianController::class, 'status'])->name('admin-antrian.updateStatus');

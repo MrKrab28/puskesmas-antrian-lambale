@@ -40,6 +40,8 @@ return new class extends Migration
         $antrian->status = 'dipanggil';
         $antrian->save();
 
+       
+
 
     }
 
@@ -50,5 +52,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('antrian');
     }
-    
+
 };
