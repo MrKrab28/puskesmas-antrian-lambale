@@ -23,6 +23,14 @@
                                 {{ strtoupper(Str::substr($jenis_antrian->jenis_antrian, 0, 1)) }}-{{ $jenis_antrian->no_antrian }}
                             </h3>
                         </div>
+                        @else
+                        <div class="card-body bg bg-primary rounded-pill">
+
+                            <h3 class=" text-light">Antrian Saat Ini</h3>
+                            <h3 class="text-center text-light">
+                                {{ strtoupper(Str::substr($jenisAntrian, 0, 1)) }}-0
+                            </h3>
+                        </div>
                     @endif
                 </div>
             </div>

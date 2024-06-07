@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\PegawaiController as AdminPegawaiController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AntrianController as AdminAntrianController;
+use App\Http\Controllers\User\AntrianController as UserAntrianController;
+use App\Models\Antrian;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,3 +55,7 @@ Route::get('admin-antrian', [AdminAntrianController::class, 'index'])->name('adm
 route::post('add/admin-antrian', [AdminAntrianController::class, 'store'])->name('admin-antrian.store');
 // Route::put('antrian/{antrian}/ubah-status', [AdminAntrianController::class, 'status'])->name('ubah-status-antrian');
 Route::put('antrian/update/{antrian:jenis_antrian}', [AdminAntrianController::class, 'status'])->name('admin-antrian.updateStatus');
+
+Route::group(['middleware' =>  'auth:user'], function () {
+Route::get('antrian', [UserAntrianController::class, 'index'])->name('user-antrian');
+});
