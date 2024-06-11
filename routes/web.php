@@ -57,5 +57,7 @@ route::post('add/admin-antrian', [AdminAntrianController::class, 'store'])->name
 Route::put('antrian/update/{antrian:jenis_antrian}', [AdminAntrianController::class, 'status'])->name('admin-antrian.updateStatus');
 
 Route::group(['middleware' =>  'auth:user'], function () {
-Route::get('antrian', [UserAntrianController::class, 'index'])->name('user-antrian');
+    Route::get('antrian', [UserAntrianController::class, 'index'])->name('user-antrian');
+    Route::get('antrian/show/{jenis}', [UserAntrianController::class, 'showAntrian'])->name('user-antrian.show');
+    Route::post('antrian/add/{jenis_antrian}', [UserAntrianController::class, 'store'])->name('user-antrian.store');
 });

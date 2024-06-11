@@ -23,7 +23,7 @@ class AntrianController extends Controller
             // 'antrian' => Antrian::where('jenis_antrian', $jenis_antrian)->orderBy('no_antrian')->get()
 
             return view('admin.jenis-antrian', [
-                'daftarUser' => User::all(),
+                'daftarUser' => User::doesntHave('antrian')->get(),
                 'antrian' => $antrianByJenis,
 
             ]);

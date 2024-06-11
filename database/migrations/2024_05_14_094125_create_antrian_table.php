@@ -25,22 +25,22 @@ return new class extends Migration
             ->onUpdate('cascade');
         });
 
-        $antrian = new Antrian();
-        $antrian->id_user = 1;
-        $antrian->no_antrian = 1;
-        $antrian->jenis_antrian = 'gigi';
-        $antrian->status = 'menunggu';
-        $antrian->save();
+        // $antrian = new Antrian();
+        // $antrian->id_user = 1;
+        // $antrian->no_antrian = 1;
+        // $antrian->jenis_antrian = 'gigi';
+        // $antrian->status = 'menunggu';
+        // $antrian->save();
 
 
-        $antrian = new Antrian();
-        $antrian->id_user = 1;
-        $antrian->no_antrian = 1;
-        $antrian->jenis_antrian = 'umum';
-        $antrian->status = 'dipanggil';
-        $antrian->save();
+        // $antrian = new Antrian();
+        // $antrian->id_user = 1;
+        // $antrian->no_antrian = 1;
+        // $antrian->jenis_antrian = 'umum';
+        // $antrian->status = 'menunggu';
+        // $antrian->save();
 
-       
+
 
 
     }

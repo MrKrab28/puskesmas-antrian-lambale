@@ -24,10 +24,10 @@ class User extends Authenticatable
     ];
 
     public function antrian(){
-       return $this->hasMany(Antrian::class, 'id_user');
+       return $this->hasOne(Antrian::class, 'id_user')->whereNot('status', 'selesai');
     }
 
-   
+
 
     /**
      * The attributes that should be hidden for serialization.

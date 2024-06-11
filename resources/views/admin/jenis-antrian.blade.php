@@ -4,8 +4,8 @@
 @section('content')
     <div class="container-fluid content-inner mt-2">
         <div class="row">
-            <div class="col-sm-4">
-                <div class="card">
+            <div class="col-sm-3">
+                <div class="card bg bg-danger  rounded-3">
 
                     @php
                         $jenisAntrian = Request::get('jenis_antrian');
@@ -16,22 +16,78 @@
                         $jenis_antrian = $currentAntrian;
                     @endphp
                     @if ($jenis_antrian)
-                        <div class="card-body bg bg-primary rounded-pill">
+                        <div class="card-body">
 
-                            <h3 class=" text-light">Antrian Saat Ini</h3>
-                            <h3 class="text-center text-light">
+                            <h3 class="fs-6 fw-bolder text-light">Antrian Saat Ini</h3>
+                            <hr style="color: white;border:3px solid white;border-widht:100%" class="my-1">
+                            <h3 class="fs-8 text-light mb-0 text-center">
                                 {{ strtoupper(Str::substr($jenis_antrian->jenis_antrian, 0, 1)) }}-{{ $jenis_antrian->no_antrian }}
                             </h3>
                         </div>
                         @else
-                        <div class="card-body bg bg-primary rounded-pill">
+                        <div class="card-body">
 
-                            <h3 class=" text-light">Antrian Saat Ini</h3>
-                            <h3 class="text-center text-light">
+                            <h3 class="fs-6 fw-bolder text-light my-0">Antrian Saat Ini</h3>
+                            <hr style="color: white;border:3px solid white;border-widht:100%" class="my-1">
+                            <h3 class="fs-8 text-light mb-0 text-center">
                                 {{ strtoupper(Str::substr($jenisAntrian, 0, 1)) }}-0
                             </h3>
                         </div>
                     @endif
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card bg-primary rounded-3">
+                    <div class="card-body">
+                        <h3 class="fs-6 fw-bolder text-light">Antrian Dipanggil</h3>
+                        <hr style="color: white;border:3px solid white;border-widht:100%" class="my-1">
+                        @php
+                            $jenisAntrian = Request::get('jenis_antrian');
+                            $currentAntrian = App\Models\Antrian::where('status', 'dipanggil')
+                                ->where('jenis_antrian', $jenisAntrian)
+                                ->latest('updated_at')
+                                ->first();
+                        @endphp
+                        @if ($currentAntrian)
+                            <h3 class="fs-8 text-light mb-0 text-center">
+                                {{ strtoupper(Str::substr($currentAntrian->jenis_antrian, 0, 1)) }}-{{ $currentAntrian->no_antrian }}
+                            </h3>
+                        @else
+                            <h3 class="fs-8 text-light mb-0 text-center">
+                                {{ strtoupper(Str::substr($jenisAntrian, 0, 1)) }}-0
+                            </h3>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card bg-warning rounded-3">
+                    <div class="card-body">
+                        <h3 class="fs-6 fw-bolder text-light">Antrian Menunggu</h3>
+                        <hr style="color: white;border:3px solid white;border-widht:100%" class="my-1">
+                        @php
+                            $jenisAntrian = Request::get('jenis_antrian');
+                            $antrianMenunggu = App\Models\Antrian::where('status', 'menunggu')
+                                ->where('jenis_antrian', $jenisAntrian)
+                                ->count();
+                        @endphp
+                        <h3 class="fs-8 text-light mb-0 text-center">{{ $antrianMenunggu }} </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card bg-success rounded-3">
+                    <div class="card-body">
+                        <h3 class="fs-6 fw-bolder text-dark">Antrian Selesai</h3>
+                        <hr style="color: white;border:3px solid black;border-widht:100%" class="my-1">
+                        @php
+                            $jenisAntrian = Request::get('jenis_antrian');
+                            $antrianSelesai = App\Models\Antrian::where('status', 'selesai')
+                                ->where('jenis_antrian', $jenisAntrian)
+                                ->count();
+                        @endphp
+                        <h3 class="fs-8 text-dark mb-0 text-center">{{ $antrianSelesai }} </h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,7 +111,7 @@
                                 method="post" class="d-inline">
                                 @method('PUT')
                                 @csrf
-                                <button class="btn btn-success">Next Antrian</button>
+                                <button class="btn btn-dark">Next Antrian</button>
                             </form>
                             @endif
                             <button type="submit" class="btn btn-primary " data-bs-toggle="modal"
@@ -119,7 +175,7 @@
                                                 @endif
                                                 @if ($antrian->status == 'selesai')
                                                     <span
-                                                        class="badge rounded-pill text-bg-success">{{ ucfirst($antrian->status) }}</span>
+                                                        class="badge rounded-pill text-bg-success text-dark">{{ ucfirst($antrian->status) }}</span>
                                                     {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
                                                         method="POST">
                                                         @csrf
