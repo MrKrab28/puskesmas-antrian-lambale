@@ -3,9 +3,7 @@
 
         <div class="section-title">
             <h2 style="color: #1977cc">Gallery</h2>
-            <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit
-                sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias
-                ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
+            <p></p>
         </div>
     </div>
 
@@ -14,64 +12,67 @@
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-1.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-1.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/gigi1.jpg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/gigi1.jpg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-2.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-2.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/polikia1.jpeg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/polikia1.jpeg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-3.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-3.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/umum2.jpeg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/umum2.jpeg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-4.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-4.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/gigi2.jpg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/gigi2.jpg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-5.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-5.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/kia2.jpeg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/kia2.jpeg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-6.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-6.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/umum3.jpg') }}"  class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/umum3.jpg') }}" alt alt="" class="img-fluid" >
+
                     </a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-7.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-7.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/logo-puskesmas-png-3.png') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/logo-puskesmas-png-3.png') }}" alt alt="" class="img-fluid mt-5 me-0" style="margin: 100px;">
+
                     </a>
                 </div>
+
             </div>
 
             <div class="col-lg-3 col-md-4">
                 <div class="gallery-item">
-                    <a href="assets/img/gallery/gallery-8.jpg" class="galelry-lightbox">
-                        <img src="assets/img/gallery/gallery-8.jpg" alt="" class="img-fluid">
+                    <a href="{{ asset('assets/img/kia3.jpeg') }}" class="galelry-lightbox">
+                        <img src="{{ asset('assets/img/kia3.jpeg') }}" alt="" class="img-fluid">
                     </a>
                 </div>
             </div>

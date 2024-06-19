@@ -30,7 +30,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 Route::get('/', [AdminAuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('authenticate', [AdminAuthController::class, 'authenticate'])->name('admin-authenticate');
 Route::post('register', [AdminAuthController::class, 'register'])->name('register');
-
+Route::get('logout/user', [AdminAuthController::class, 'logoutUser'])->name('user-logout')->middleware('auth:user');
 Route::group(['middleware' =>  'auth:admin'], function () {
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin-logout');
 
