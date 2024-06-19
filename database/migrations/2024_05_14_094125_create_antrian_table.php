@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('no_antrian');
             $table->enum('jenis_antrian' , ['gigi', 'umum', 'kia']);
             $table->enum('status' , ['menunggu', 'dipanggil', 'selesai'])->default('menunggu');
+            $table->timestamp('batas_waktu')->nullable();
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')

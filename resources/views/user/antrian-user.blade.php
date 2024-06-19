@@ -14,28 +14,41 @@
 
 
             @php
+
                 $antrian = auth()->user()->antrian;
+
 
             @endphp
 
             @if ($antrian)
                 {{-- @foreach ($antrian as $antrianUser) --}}
-                <div class="col-lg-4 col-md-6 align-item-center align-items-stretch mt-0 mt-lg-0 rounded">
+                <div class="col-lg-4 col-md-6 align-item-center align-items-stretch mb-3 mt-0 mt-lg-0 rounded">
                     <div class="icon-box" style="border-radius: 25px">
                         <div class="icon">
                             <i class="fas fa-hospital-user"></i>
-                            </div>
+                        </div>
                         <h4 class="fs-6"><a class="" href="">NOMOR ANTRIAN ANDA</a></h4>
-                            <div class="me-3 ms-3">
+                        <div class="me-3 ms-3">
                             <h4 class="fs-1"><a
                                     href="">{{ strtoupper(Str::substr($antrian->jenis_antrian, 0, 1)) }}-{{ $antrian->no_antrian }}</a>
                             </h4>
+
                         </div>
                         <h4 class="title"><a href="">POLI {{ strtoupper($antrian->jenis_antrian) }}</a>
                         </h4>
                     </div>
                 </div>
+                <div style="font-size: 15px;text-align:center" class="mb-0">
 
+
+                    <h6>Catatan :</h6> <span style="font-size: 15px;text-align:center">*Nomor Antrian Anda Diperkirakan
+                        Akan
+                        Dipanggil Pada Pukul <b>
+                            {{ Carbon\Carbon::parse($antrian->batas_waktu)->isoFormat('HH:mm') }}</b>
+                        WITA</span><br>
+                    <span style="">Mohon Untuk Berada Di Puskesmas 30 Menit Sebelum Waktu
+                        Pemanggilan Antrian Anda </span>
+                </div>
                 {{-- @endforeach --}}
             @endif
 
@@ -51,3 +64,4 @@
 
     </div>
 </section>
+

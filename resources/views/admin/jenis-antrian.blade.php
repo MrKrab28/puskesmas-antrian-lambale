@@ -11,6 +11,7 @@
                         $jenisAntrian = Request::get('jenis_antrian');
                         $currentAntrian = App\Models\Antrian::where('status', 'dipanggil')
                             ->where('jenis_antrian', $jenisAntrian)
+                            ->whereDate('created_at', Carbon\Carbon::today())
                             ->latest('updated_at')
                             ->first();
                         $jenis_antrian = $currentAntrian;
@@ -24,7 +25,7 @@
                                 {{ strtoupper(Str::substr($jenis_antrian->jenis_antrian, 0, 1)) }}-{{ $jenis_antrian->no_antrian }}
                             </h3>
                         </div>
-                        @else
+                    @else
                         <div class="card-body">
 
                             <h3 class="fs-6 fw-bolder text-light my-0">Antrian Saat Ini</h3>
@@ -45,6 +46,7 @@
                             $jenisAntrian = Request::get('jenis_antrian');
                             $currentAntrian = App\Models\Antrian::where('status', 'dipanggil')
                                 ->where('jenis_antrian', $jenisAntrian)
+                                ->whereDate('created_at', Carbon\Carbon::now())
                                 ->latest('updated_at')
                                 ->first();
                         @endphp
@@ -69,6 +71,7 @@
                             $jenisAntrian = Request::get('jenis_antrian');
                             $antrianMenunggu = App\Models\Antrian::where('status', 'menunggu')
                                 ->where('jenis_antrian', $jenisAntrian)
+                                ->whereDate('created_at', Carbon\Carbon::now())
                                 ->count();
                         @endphp
                         <h3 class="fs-8 text-light mb-0 text-center">{{ $antrianMenunggu }} </h3>
@@ -84,6 +87,7 @@
                             $jenisAntrian = Request::get('jenis_antrian');
                             $antrianSelesai = App\Models\Antrian::where('status', 'selesai')
                                 ->where('jenis_antrian', $jenisAntrian)
+                                ->whereDate('created_at', Carbon\Carbon::now())
                                 ->count();
                         @endphp
                         <h3 class="fs-8 text-dark mb-0 text-center">{{ $antrianSelesai }} </h3>
@@ -107,37 +111,40 @@
                         </div>
                         <div>
                             @if ($antrian->contains('status', '!=', 'selesai'))
-                            <form action="{{ route('admin-antrian.updateStatus', Request::get('jenis_antrian')) }}"
-                                method="post" class="d-inline">
-                                @method('PUT')
-                                @csrf
-                                <button class="btn btn-dark">Next Antrian</button>
-                            </form>
+                                <form action="{{ route('admin-antrian.updateStatus', Request::get('jenis_antrian')) }}"
+                                    method="post" class="d-inline">
+                                    @method('PUT')
+                                    @csrf
+
+                                    @php
+                                        $menunggu = $antrian->where('status', 'menunggu')->first();
+                                    @endphp
+
+
+                                    <span id="waktu" class="mx-3">{{ Carbon\Carbon::now()->format('l, H:i:s') }} </span>
+                                    <button id="nextAntrianBtn" class="btn btn-dark">Next Antrian</button>
+                                </form>
                             @endif
                             <button type="submit" class="btn btn-primary " data-bs-toggle="modal"
                                 data-bs-target="#exampleModal">Tambah Data</button>
                         </div>
                     </div>
                     <div class="card-body text-nowrap">
-
                         <div class="table-reponsive">
                             {{-- <table id="table" class="table table-striped mt-5" data-toggle="data-table"> --}}
-                            <table id="table" class="table table-hover mt-5" style="width: 100%">
+                            <table id="table" class="table table-hover mt-0" style="width: 100%">
                                 <thead>
                                     <tr>
-
                                         <th>#</th>
                                         <th>Nama Lengkap</th>
                                         <th>No Antrian</th>
                                         <th>Status </th>
-
-
+                                        <th>Waktu Panggil </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach ($antrian as $antrian)
-                                        <tr>
+                                        <tr data-jenis-antrian={{ $antrian->jenis_antrian }}>
 
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $antrian->user->nama }}</td>
@@ -147,54 +154,22 @@
                                                 @if ($antrian->status == 'menunggu')
                                                     <span
                                                         class="badge rounded-pill text-bg-warning">{{ ucfirst($antrian->status) }}</span>
-                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="dipanggil"
-                                                            id="">
-                                                        <button
-                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @else btn-success @endif">
-                                                            {{ ucfirst($antrian->status) }}
-                                                        </button>
-                                                    </form> --}}
                                                 @endif
                                                 @if ($antrian->status == 'dipanggil')
                                                     <span
                                                         class="badge rounded-pill text-bg-primary">{{ ucfirst($antrian->status) }}</span>
-                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="selesai" id="">
-                                                        <button
-                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @elseif($antrian->status == 'selesai') btn-success @else btn-primary @endif">
-                                                            {{ ucfirst($antrian->status) }}
-                                                        </button>
-                                                    </form> --}}
                                                 @endif
                                                 @if ($antrian->status == 'selesai')
                                                     <span
                                                         class="badge rounded-pill text-bg-success text-dark">{{ ucfirst($antrian->status) }}</span>
-                                                    {{-- <form action="{{ route('admin-antrian.updateStatus', $antrian) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button
-                                                            class="btn @if ($antrian->status == 'menunggu') btn-primary @elseif($antrian->status == 'dipanggil') btn-warning @elseif($antrian->status == 'selesai') btn-success @else btn-primary @endif"
-                                                            disabled>
-                                                            {{ ucfirst($antrian->status) }}
-                                                        </button>
-                                                    </form> --}}
                                                 @endif
                                             </td>
-
-
-
+                                            <td>
+                                                {{ Carbon\Carbon::parse($antrian->batas_waktu)->isoFormat('HH:mm') }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -203,6 +178,124 @@
 
         </div>
     </div>
+    {{-- <script>
+        let remainingSeconds = {{ $antrian->where('status', 'menunggu')->first()->remaining_seconds ?? 0 }};
+        let countdownElement = document.getElementById('countdown');
+
+        function updateCountdown() {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                let minutes = Math.floor(remainingSeconds / 60);
+                let seconds = remainingSeconds % 60;
+                countdownElement.textContent =
+                    `Waktu tunggu: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                countdownElement.textContent = 'Silahkan memanggil antrian selanjutnya';
+                clearInterval(countdownInterval);
+            }
+        }
+
+        let countdownInterval = setInterval(updateCountdown, 1000);
+    </script> --}}
+    <input type="hidden" id="jenis_table" value="{{ request('jenis_antrian') }}"
+        placeholder="{{ request('jenis_antrian') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        Pusher.logToConsole = true;
+        var pusher = new Pusher('31a00261f5424be7ca0c', {
+            cluster: 'ap1'
+        });
+
+        function reloadDataTable() {
+            $('#table').DataTable().clear().destroy();
+            initDataTable();
+        }
+        var channel = pusher.subscribe('antrian');
+        channel.bind('antrian-store', function(data) {
+            console.log('Data received:', data);
+            if (data && data.nama && data.no_antrian && data.status && data.jenis_antrian && data.kuota !==
+                undefined) {
+
+                toastr.success('Nama Lengkap : ' + data.nama + '<br>POLI: ' + data.jenis_antrian,
+                    'Pasien Telah Mendaftar Nomor Antrian', {
+                        timeOut: 0,
+                        extendedTimeOut: 0,
+                    });
+                setTimeout(function() {
+                    location.reload(true); // Memuat ulang halaman dengan membersihkan cache
+                }, 1500);
+                var table = $('#table').DataTable();
+                var rowIndex = table.rows().count() + 1;
+                table.row.add([
+                    rowIndex,
+                    data.nama,
+                    data.jenis_antrian.toUpperCase().charAt(0) + '-' + data.no_antrian,
+                    getStatusBadge(data.status),
+                    data.batas_waktu ? formatTime(data.batas_waktu) : ''
+                ]).draw(false);
+            } else {
+                console.error('Invalid data structure received:', data);
+            }
+        });
+
+        function getStatusBadge(status) {
+            var badgeClass = '';
+            var badgeText = '';
+
+            switch (status) {
+                case 'menunggu':
+                    badgeClass = 'badge rounded-pill text-bg-warning';
+                    badgeText = 'Menunggu';
+                    break;
+                case 'dipanggil':
+                    badgeClass = 'badge rounded-pill text-bg-primary';
+                    badgeText = 'Dipanggil';
+                    break;
+                case 'selesai':
+                    badgeClass = 'badge rounded-pill text-bg-success text-dark';
+                    badgeText = 'Selesai';
+                    break;
+            }
+
+            return '<span class="' + badgeClass + '">' + badgeText + '</span>';
+        }
+
+        function formatTime(time) {
+            var date = new Date(time);
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+        }
+
+        // Inisialisasi DataTable
+        $('#table').DataTable();
+    </script>
+    <script>
+    function updateJam() {
+        var sekarang = new Date(); // Mendapatkan waktu saat ini
+        var hari = sekarang.toLocaleDateString('id-ID', { weekday: 'long' }); // Nama hari dalam bahasa Indonesia
+        var jam = sekarang.getHours();
+        var menit = sekarang.getMinutes();
+        var detik = sekarang.getSeconds();
+
+        // Format jam agar selalu dua digit (misal: 09:05:02)
+        jam = (jam < 10 ? "0" : "") + jam;
+        menit = (menit < 10 ? "0" : "") + menit;
+        detik = (detik < 10 ? "0" : "") + detik;
+
+        // Menyusun teks waktu yang akan ditampilkan
+        var waktu = hari + ', ' + jam + ':' + menit + ':' + detik;
+
+        // Memasukkan teks waktu ke dalam elemen dengan id="waktu"
+        document.getElementById("waktu").innerHTML = waktu;
+    }
+
+    // Memanggil fungsi updateJam() setiap detik (1000 milidetik)
+    setInterval(updateJam, 1000);
+</script>
 @endsection
 @push('modals')
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -290,6 +383,23 @@
     @include('includes.choices-js.scripts')
     @include('includes.datatables.scripts')
 
+    <script>
+        // let remainingSeconds =
+        // {{ session('timeString') }};
+        // let countdownElement = document.getElementById('countdown');
+
+        // function updateCountdown() {
+        //     if (remainingSeconds > 0) {
+        //         remainingSeconds--;
+        //         countdownElement.textContent = remainingSeconds;
+        //     } else {
+        //         countdownElement.textContent = '0';
+        //         clearInterval(countdownInterval);
+        //     }
+        // }
+
+        // let countdownInterval = setInterval(updateCountdown, 1000);
+    </script>
     <script>
         $(document).ready(function() {
             $('#table').DataTable({

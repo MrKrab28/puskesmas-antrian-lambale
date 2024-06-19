@@ -15,64 +15,84 @@
                     $jenisAntrian = ['kia', 'umum', 'gigi'];
 
                 @endphp
-                @foreach ($jenisAntrian as $jenis )
-
-                        <div class="col-lg-4 col-md-6">
-                            <div class="count-box" style="border-radius: 20px">
-                                @if($jenis == 'kia')
+                @foreach ($jenisAntrian as $jenis)
+                    <div class="col-lg-4 col-md-6 mt-5">
+                        <div class="count-box" style="border-radius: 20px">
+                            @if ($jenis == 'kia')
                                 <i class="ti ti-baby-carriage"></i>
-                                @elseif ($jenis == 'umum')
+                            @elseif ($jenis == 'umum')
                                 <i class="fa fa-user-md "></i>
-                                @elseif ($jenis = 'gigi')
+                            @elseif ($jenis = 'gigi')
                                 <i class="ti ti-dental"></i>
+                            @endif
+                            <span
+                                id="nomor-antrian-{{ $jenis }}">{{ strtoupper(Str::substr($jenis, 0, 1)) }}-{{ $data_antrian[$jenis] }}
+                            </span>
+                            <h4>POLI {{ strtoupper($jenis) }} </h4>
+                            <p id="kuota-antrian-{{ $jenis }}" >Kuota Nomor Antrian Tersisa {{ $kuota[$jenis] }}</p>
+                            @auth('user')
+                                @if (!auth()->user()->antrian && $kuota[$jenis] > 0)
+                                    <form action="{{ route('user-antrian.store', $jenis) }}" method="POST">
+                                        @csrf
+                                        <input type="text" value="{{ $jenis }}" name="jenis_antrian" hidden>
+                                        <button class="btn btn-primary mt-2" type="submit">Ambil Antrian</button>
+                                    </form>
                                 @endif
-                                <span>{{ strtoupper(Str::substr($jenis, 0, 1)) }}-{{ $data_antrian[$jenis] }} </span>
-                                <h4>POLI {{ strtoupper($jenis) }} </h4>
-                                <p>Kuota Nomor Antrian Tersisa 9</p>
-                                @auth('user')
-                                    @if (!auth()->user()->antrian)
-                                        <form action="{{ route('user-antrian.store', $jenis) }}" method="POST">
-                                            @csrf
-                                            <input type="text" value="{{ $jenis }}" name="jenis_antrian" hidden>
-                                            <button class="btn btn-primary mt-2" type="submit">Ambil Antrian</button>
-                                        </form>
-                                    @endif
-                                @endauth
-                            </div>
+                            @endauth
                         </div>
-
-
-
-
+                    </div>
                 @endforeach
-                {{-- <div class="col-lg-4 col-md-6 mt-5 mt-md-0">
-                    <div class="count-box">
-                        <i class="far fa-hospital"></i>
-                        <span data-purecounter-start="0" data-purecounter-end="18" data-purecounter-duration="1"
-                            class="purecounter"></span>
-                        <h4>POLI UMUM</h4>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 mt-5 mt-lg-0">
-                    <div class="count-box">
-                        <i class="fas fa-flask"></i>
-                        <span data-purecounter-start="0" data-purecounter-end="12" data-purecounter-duration="1"
-                            class="purecounter"></span>
-                        <h4>POLI GIGI</h4>
-                    </div>
-                </div> --}}
-
-                {{-- <div class="col-lg-3 col-md-6 mt-5 mt-lg-0">
-      <div class="count-box">
-        <i class="fas fa-award"></i>
-        <span data-purecounter-start="0" data-purecounter-end="150" data-purecounter-duration="1" class="purecounter"></span>
-        <p>Awards</p>
-      </div>
-    </div> --}}
-
             </div>
 
         </div>
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('31a00261f5424be7ca0c', {
+                cluster: 'ap1'
+            });
+            var channel = pusher.subscribe('antrian');
+            channel.bind('antrian-update', function(data) {
+                if (data && data.jenis_antrian && data.no_antrian && data.kuota !== undefined) {
+                    var jenisAntrianElement = document.getElementById('nomor-antrian-' + data.jenis_antrian);
+                    if (jenisAntrianElement) {
+                        // jenisAntrianElement.textContent = data.no_antrian;
+                        jenisAntrianElement.innerHTML = `<span id="nomor-antrian-${data.jenis_antrian}" style="color: #1977cc">${data.jenis_antrian.charAt(0).toUpperCase()}-${data.no_antrian}</span>`;
+                    }
+
+                    var kuotaElement = document.getElementById('kuota-antrian-${data.jenis_antrian}');
+                    if (kuotaElement) {
+                        kuotaElement.textContent = `Kuota Nomor Antrian Tersisa ${data.kuota}`;
+                    }
+                } else {
+                    console.error('Invalid data structure received:', data);
+                }
+            });
+        });
+        </script>
     </section>
+
+    </script>
 @endsection
+{{-- @section('scripts')
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+        });
+
+        var channel = pusher.subscribe('antrian');
+        channel.bind('antrian.updated', function(data) {
+            // Periksa apakah antrian yang diperbarui adalah milik pengguna saat ini
+            @if (auth()->check() && auth()->user()->antrian)
+                if (data.id === {{ auth()->user()->antrian->id }}) {
+                    // Perbarui tampilan nomor antrian
+                    document.getElementById('nomor-antrian').textContent = data.no_antrian;
+                }
+            @endif
+        });
+    </script>
+@endsection --}}
