@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Events\AntrianUpdated;
+
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Jadwal;
 use App\Models\Antrian;
 use Illuminate\Http\Request;
+use App\Events\AntrianUpdated;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class AntrianController extends Controller
 {
@@ -17,11 +20,11 @@ class AntrianController extends Controller
         if ($jenis_antrian) {
             $antrianByJenis = Antrian::where('jenis_antrian', $jenis_antrian)->whereDate('created_at', Carbon::today())->get();
 
-            
+
 
             return view('admin.jenis-antrian', [
                 'daftarUser' => User::doesntHave('antrian')->get(),
-                'antrian' => $antrianByJenis,
+                'daftarAntrian' => $antrianByJenis,
 
             ]);
         }
@@ -30,19 +33,27 @@ class AntrianController extends Controller
             'kia' => Antrian::where('jenis_antrian', 'kia')->whereDate('created_at', Carbon::today())->orderBy('no_antrian')->get(),
             'gigi' => Antrian::where('jenis_antrian', 'gigi')->whereDate('created_at', Carbon::today())->orderBy('no_antrian')->get(),
         ];
+        $antrian_tutup = [
+            'umum' => Cache::get('antrian_umum_tutup', false),
+            'kia' => Cache::get('antrian_kia_tutup', false),
+            'gigi' => Cache::get('antrian_gigi_tutup', false),
+        ];
 
-        $antrian = Antrian::all();
+        // $antrian = Antrian::all();
 
         return view('admin.antrian', compact([
-            'data_antrian', 'antrian'
+            'data_antrian',  'antrian_tutup'
         ]));
     }
+
+
 
     public function store(Request $request)
     {
         $request->validate([
             'id_user' => 'required',
         ]);
+
 
         $hitung_antrian =  Antrian::where('jenis_antrian', $request->jenis_antrian)->whereDate('created_at', Carbon::today())->get()->count();
 
@@ -56,8 +67,7 @@ class AntrianController extends Controller
             if (Carbon::parse($antrian_sebelumnya->batas_waktu)->addMinutes(10) <= Carbon::now()) {
 
                 $batas_waktu = Carbon::now()->addMinutes(10);
-            }
-            else {
+            } else {
 
                 $batas_waktu = Carbon::parse($antrian_sebelumnya->batas_waktu)->addMinutes(10);
             }
@@ -71,7 +81,7 @@ class AntrianController extends Controller
         $antrian->batas_waktu = $batas_waktu;
         $antrian->save();
 
-        broadcast(new AntrianUpdated($antrian));
+        // broadcast(new AntrianUpdated($antrian));
         return redirect()->back()->with('success', 'Nomor Antrian Berhasil Dibuat');
     }
 
@@ -97,7 +107,7 @@ class AntrianController extends Controller
                     $menunggu->update();
 
                     // Menyiarkan event AntrianUpdated dengan nomor antrian yang dipanggil
-                broadcast(new AntrianUpdated($menunggu));
+                    broadcast(new AntrianUpdated($menunggu))->toOthers();
                 }
             } else {
                 return redirect()->back()->with('error', 'mohon di tungu ya ');
@@ -109,32 +119,42 @@ class AntrianController extends Controller
                 $menunggu->update();
 
                 // Menyiarkan event AntrianUpdated dengan nomor antrian yang dipanggil
-                broadcast(new AntrianUpdated($menunggu));
+                broadcast(new AntrianUpdated($menunggu))->toOthers();
             }
         }
 
         return redirect()->back()->with('success', 'Nomor Antrian Berhasil Diupdate');
+    }
+
+    public function tutupAntrian($jenisAntrian)
+    {
 
 
-        // $sisaWaktu = 600 - ($now - $panggilan_terakhir);
-        // $sisaWaktu = 600 - (time() - $now);
-        // $sisaWaktu = max(0, $sisaWaktu);
-        // // $request->session()->put('remainingSeconds', $sisaWaktu);
-        // $minutes = floor($sisaWaktu / 60);
-        // $seconds = $sisaWaktu % 60;
-        // $timeString = sprintf("%02d:%02d", $minutes, $seconds);
+        if (!in_array($jenisAntrian, ['umum', 'kia', 'gigi'])) {
+            return response()->json(['success' => false, 'message' => 'Jenis antrian tidak valid.']);
+        }
+
+        Cache::put('antrian_' . $jenisAntrian . '_tutup', true, now()->addDays(1));
+
+        broadcast(new AntrianUpdated(null, true, $jenisAntrian))->toOthers();
+
+        // return response()->json(['success' => true, 'message' => 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil ditutup']);
+
+        return redirect()->back()->with('success', 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil ditutup');
+    }
 
 
-        // $menunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')->first();
-        // if ($menunggu) {
-        //     $menunggu->remaining_seconds = $sisaWaktu;
-        //     $menunggu->update();
-        // }
-        // $timeString = Carbon::parse($panggilan_terakhir->batas_waktu)->diffForHumans();
+    public function bukaAntrian($jenisAntrian)
+    {
+        if (!in_array($jenisAntrian, ['umum', 'kia', 'gigi'])) {
+            return response()->json(['success' => false, 'message' => 'Jenis antrian tidak valid.']);
+        }
 
-        // return redirect()->back()->with([
-        //     'error' => 'Anda harus menunggu ' . $timeString . ' menit sebelum memanggil antrian selanjutnya.',
-        //     'timeString' => $timeString,
-        // ]);
+        Cache::forget('antrian_' . $jenisAntrian . '_tutup');
+
+        broadcast(new AntrianUpdated(null, false, $jenisAntrian))->toOthers();
+
+        return redirect()->back()->with('success', 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil dibuka kembali');
+        // return response()->json(['success' => true, 'message' => 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil dibuka kembali']);
     }
 }

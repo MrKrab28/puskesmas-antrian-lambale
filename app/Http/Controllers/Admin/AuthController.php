@@ -23,12 +23,13 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
         if (Auth::guard('user')->attempt($credentials)) {
-
+            request()->session()->regenerate();
 
 
             return redirect()->route('user-antrian');
         }
          if (Auth::guard('admin')->attempt($credentials)){
+            request()->session()->regenerate();
             return redirect()->route('dashboard');
         }
         return redirect()->back()->with('failed', 'Gagal Login, Password Atau Email Salah');
@@ -37,10 +38,16 @@ class AuthController extends Controller
 
     public function logout(){
         Auth::guard('admin')->logout();
+        request()->session()->invalidate();
+
+        request()->session()->regenerateToken();
         return redirect()->route('login');
     }
     public function logoutUser(){
         Auth::guard('user')->logout();
+        request()->session()->invalidate();
+
+        request()->session()->regenerateToken();
         return redirect()->route('login');
     }
 

@@ -33,11 +33,29 @@
                             <h3 class="text-center text-primary">Jumlah Antrian </h3>
                             <h3 class="text-center">{{ $jumlah_antrian->count() }}</h3>
                         </div>
-
+                        <div class="mt-3 text-center">
+                            @if (!$antrian_tutup[$jenis_antrian])
+                                <form action="{{ route('admin.tutup-antrian', $jenis_antrian) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-dark">Tutup Antrian
+                                        {{ strtoupper($jenis_antrian) }}</button>
+                                </form>
+                            @else
+                                <p class="text-danger font-weight-bold">Antrian {{ strtoupper($jenis_antrian) }} sedang
+                                    ditutup</p>
+                                <form action="{{ route('admin.buka-antrian', $jenis_antrian) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success">Buka Antrian
+                                        {{ strtoupper($jenis_antrian) }}</button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
+
                 </div>
             </div>
         @endforeach
+
         {{-- <div class="col-sm-4">
             <div class="card">
                 <div class="card-body">
@@ -73,4 +91,63 @@
 
 
     </div>
+    @push('scripts')
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script>
+            Pusher.logToConsole = true;
+            var pusher = new Pusher('31a00261f5424be7ca0c', {
+                cluster: 'ap1'
+            });
+            var channel = pusher.subscribe('antrian');
+
+            channel.bind('antrian-update', function(data) {
+                if (data.isClosed !== undefined) {
+                    updateAntrianControl(data.jenis_antrian, data.isClosed);
+                }
+            });
+
+            function updateAntrianControl(jenisAntrian, isClosed) {
+                var controlElement = document.getElementById('antrian-control-' + jenisAntrian);
+                if (controlElement) {
+                    if (isClosed) {
+                        controlElement.innerHTML = `
+                            <p class="text-danger font-weight-bold">Antrian ${jenisAntrian.toUpperCase()} sedang ditutup</p>
+                            <form action="/admin/buka-antrian/${jenisAntrian}" method="POST" class="buka-antrian-form">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Buka Antrian ${jenisAntrian.toUpperCase()}</button>
+                            </form>
+                        `;
+                    } else {
+                        controlElement.innerHTML = `
+                            <form action="/admin/tutup-antrian/${jenisAntrian}" method="POST" class="tutup-antrian-form">
+                                @csrf
+                                <button type="submit" class="btn btn-danger">Tutup Antrian ${jenisAntrian.toUpperCase()}</button>
+                            </form>
+                        `;
+                    }
+                }
+            }
+            document.addEventListener('submit', function(e) {
+                if (e.target.classList.contains('tutup-antrian-form') || e.target.classList.contains(
+                        'buka-antrian-form')) {
+                    e.preventDefault();
+                    fetch(e.target.action, {
+                            method: 'POST',
+                            body: new FormData(e.target),
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            }
+                        }).then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Update akan dilakukan melalui Pusher event
+                            } else {
+                                alert('Terjadi kesalahan: ' + data.message);
+                            }
+                        });
+                }
+            });
+        </script>
+    @endpush
 @endsection

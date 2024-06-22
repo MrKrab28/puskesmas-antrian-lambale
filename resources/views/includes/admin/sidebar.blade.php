@@ -30,11 +30,11 @@
                     <span class="hide-menu">Master Data</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('pegawai-index') }}" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('admin-dokter.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-users"></i>
                         </span>
-                        <span class="hide-menu">Data Pegawai</span>
+                        <span class="hide-menu">Data Spesialis</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -45,6 +45,10 @@
                         <span class="hide-menu">Data Pasien</span>
                     </a>
                 </li>
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Pelayanan</span>
+                </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('admin-antrian') }}" aria-expanded="false">
                         <span>
@@ -54,11 +58,11 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="./ui-card.html" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('admin-jadwal.index') }}" aria-expanded="false">
                         <span>
                             <i class="ti ti-cards"></i>
                         </span>
-                        <span class="hide-menu">Card</span>
+                        <span class="hide-menu">Jadwal</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
