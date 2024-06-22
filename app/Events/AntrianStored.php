@@ -10,9 +10,11 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AntrianUpdated
+class AntrianStored implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    
 
     /**
      * Create a new event instance.
@@ -36,6 +38,6 @@ class AntrianUpdated
 
     public function broadcastAs(): string
     {
-        return 'antrian-diperbarui';
+        return 'antrian-diambil';
     }
 }

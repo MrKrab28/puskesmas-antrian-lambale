@@ -81,7 +81,6 @@ class AntrianController extends Controller
         $antrian->batas_waktu = $batas_waktu;
         $antrian->save();
 
-        // broadcast(new AntrianUpdated($antrian));
         return redirect()->back()->with('success', 'Nomor Antrian Berhasil Dibuat');
     }
 

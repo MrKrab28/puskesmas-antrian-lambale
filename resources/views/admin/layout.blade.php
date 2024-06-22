@@ -9,6 +9,13 @@
     @include('includes.admin.styling.styles')
     @stack('modals')
     @stack('styles')
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        Pusher.logToConsole = true;
+        var pusher = new Pusher({{ env('PUSHER_APP_KEY') }}, {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+        });
+    </script>
 </head>
 
 <body>
@@ -23,7 +30,7 @@
 
         <!--  Main wrapper -->
         <div class="body-wrapper">
-        
+
             <!--  Header Start -->
             @include('includes.admin.header')
             <!--  Header End -->

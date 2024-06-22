@@ -221,25 +221,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-    <script>
-        Pusher.logToConsole = true;
-        var pusher = new Pusher('31a00261f5424be7ca0c', {
-            cluster: 'ap1'
-        });
-
-        function reloadDataTable() {
-            $('#table').DataTable().clear().destroy();
-            initDataTable();
-        }
-
-        function formatTime(time) {
-            var date = new Date(time);
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
-        }
-    </script>
 @endpush
 
 @push('scripts')
@@ -260,6 +241,19 @@
                     $('#formDelete' + id).submit()
                 }
             });
+        }
+
+
+        function reloadDataTable() {
+            $('#table').DataTable().clear().destroy();
+            initDataTable();
+        }
+
+        function formatTime(time) {
+            var date = new Date(time);
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
         }
     </script>
     @if (Session::has('success'))

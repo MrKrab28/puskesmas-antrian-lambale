@@ -95,8 +95,3 @@ Route::group(['middleware' =>  'auth:user'], function () {
 
 Route::get('register', [UserController::class, 'showRegister'])->name('user-register')->middleware('guest');
 Route::post('register', [UserController::class, 'store'])->name('user-register.store');
-
-
-Route::get('send-event', function () {
-    broadcast(new HelloEvent);
-});

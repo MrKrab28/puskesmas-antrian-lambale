@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Jadwal;
 use App\Models\Antrian;
-use App\Events\AntrianStore;
+use App\Events\AntrianStored;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -23,7 +23,6 @@ class AntrianController extends Controller
                 'antrian' => $antrianByJenis,
 
             ]);
-            
         }
         $data_antrian = [
             'kia' => Antrian::where('jenis_antrian', 'kia')->where('status', 'dipanggil')->whereDate('created_at', Carbon::today())->first()->no_antrian ?? '0',
@@ -61,8 +60,7 @@ class AntrianController extends Controller
             if (Carbon::parse($antrian_sebelumnya->batas_waktu)->addMinutes(10) <= Carbon::now()) {
 
                 $batas_waktu = Carbon::now()->addMinutes(10);
-            }
-            else {
+            } else {
 
                 $batas_waktu = Carbon::parse($antrian_sebelumnya->batas_waktu)->addMinutes(10);
             }
@@ -77,22 +75,23 @@ class AntrianController extends Controller
         $antrian->batas_waktu = $batas_waktu;
         $antrian->save();
 
-        broadcast(new AntrianStore($antrian));
+        broadcast(new AntrianStored($antrian));
 
         return redirect()->back()->with('success', 'Berhasil Mengambil Nomor Antrian');
     }
 
-    public function showAntrian($jenis){
+    public function showAntrian($jenis)
+    {
 
 
 
 
         $currentAntrian = Antrian::where('status', 'dipanggil')
-        ->where('jenis_antrian', $jenis)
-        ->latest('updated_at')
-        ->first();
+            ->where('jenis_antrian', $jenis)
+            ->latest('updated_at')
+            ->first();
 
         return view('user.antrian')->with('currentAntrian', $currentAntrian)
-        ->with('jenis', $jenis);;
-        }
+            ->with('jenis', $jenis);;
+    }
 }

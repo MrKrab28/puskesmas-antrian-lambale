@@ -6,7 +6,6 @@
             <div class="col-sm-4">
                 <div class="card">
                     <div class="card-body">
-
                         <div
                             class="card-header  @if ($jenis_antrian == 'kia') bg-primary text-light
                                     @elseif ($jenis_antrian == 'umum')
@@ -55,99 +54,5 @@
                 </div>
             </div>
         @endforeach
-
-        {{-- <div class="col-sm-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-header bg-primary rounded">
-                        <h3 class="text-light"><button onclick="document.location.href = '?jenis_antrian=umum'" class="btn btn-primary text-white">POLI UMUM </button></h3>
-                    </div>
-                    <div class="mb-3">
-                        <div class="table-responsive">
-
-                            <h3>Jumlah Antrian :</h3>
-                            <h3 class="text-center">{{ $umum->count() }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="card-header bg-primary rounded">
-                        <h3 class="text-light"><button onclick="document.location.href = '?jenis_antrian=kia'" class="btn btn-primary text-white">POLI KIA </button></h3>
-                    </div>
-                    <div class="mb-3">
-
-                            <h3>Jumlah Antrian :</h3>
-                            <h3 class="text-center">{{ $kia->count() }}</h3>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div> --}}
-
-
     </div>
-    @push('scripts')
-        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-        <script>
-            Pusher.logToConsole = true;
-            var pusher = new Pusher('31a00261f5424be7ca0c', {
-                cluster: 'ap1'
-            });
-            var channel = pusher.subscribe('antrian');
-
-            channel.bind('antrian-update', function(data) {
-                if (data.isClosed !== undefined) {
-                    updateAntrianControl(data.jenis_antrian, data.isClosed);
-                }
-            });
-
-            function updateAntrianControl(jenisAntrian, isClosed) {
-                var controlElement = document.getElementById('antrian-control-' + jenisAntrian);
-                if (controlElement) {
-                    if (isClosed) {
-                        controlElement.innerHTML = `
-                            <p class="text-danger font-weight-bold">Antrian ${jenisAntrian.toUpperCase()} sedang ditutup</p>
-                            <form action="/admin/buka-antrian/${jenisAntrian}" method="POST" class="buka-antrian-form">
-                                @csrf
-                                <button type="submit" class="btn btn-success">Buka Antrian ${jenisAntrian.toUpperCase()}</button>
-                            </form>
-                        `;
-                    } else {
-                        controlElement.innerHTML = `
-                            <form action="/admin/tutup-antrian/${jenisAntrian}" method="POST" class="tutup-antrian-form">
-                                @csrf
-                                <button type="submit" class="btn btn-danger">Tutup Antrian ${jenisAntrian.toUpperCase()}</button>
-                            </form>
-                        `;
-                    }
-                }
-            }
-            document.addEventListener('submit', function(e) {
-                if (e.target.classList.contains('tutup-antrian-form') || e.target.classList.contains(
-                        'buka-antrian-form')) {
-                    e.preventDefault();
-                    fetch(e.target.action, {
-                            method: 'POST',
-                            body: new FormData(e.target),
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                    'content')
-                            }
-                        }).then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Update akan dilakukan melalui Pusher event
-                            } else {
-                                alert('Terjadi kesalahan: ' + data.message);
-                            }
-                        });
-                }
-            });
-        </script>
-    @endpush
 @endsection

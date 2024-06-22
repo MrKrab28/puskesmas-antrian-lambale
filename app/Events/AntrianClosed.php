@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class HelloEvent implements ShouldBroadcast
+class AntrianClosed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -30,7 +30,12 @@ class HelloEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('ashari'),
+            new Channel('antrian'),
         ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'antrian-ditutup';
     }
 }
