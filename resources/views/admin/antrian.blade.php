@@ -36,8 +36,9 @@
                             @if (!$antrian_tutup[$jenis_antrian])
                                 <form action="{{ route('admin.tutup-antrian', $jenis_antrian) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-dark">Tutup Antrian
-                                        {{ strtoupper($jenis_antrian) }}</button>
+                                    <button type="submit" class="btn btn-dark">
+                                        Tutup Antrian {{ strtoupper($jenis_antrian) }}
+                                    </button>
                                 </form>
                             @else
                                 <p class="text-danger font-weight-bold">Antrian {{ strtoupper($jenis_antrian) }} sedang

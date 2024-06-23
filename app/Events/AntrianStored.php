@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Antrian;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,14 +15,14 @@ class AntrianStored implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    
+    public $antrian;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Antrian $antrian)
     {
-        //
+        $this->antrian = $antrian;
     }
 
     /**
@@ -39,5 +40,14 @@ class AntrianStored implements ShouldBroadcast
     public function broadcastAs(): string
     {
         return 'antrian-diambil';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'nama' => $this->antrian->user->nama,
+            'jenis_antrian' => $this->antrian->jenis_antrian,
+            'no_antrian' => $this->antrian->no_antrian
+        ];
     }
 }

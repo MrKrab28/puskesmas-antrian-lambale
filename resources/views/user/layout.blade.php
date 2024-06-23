@@ -11,6 +11,16 @@
     <!-- Favicons -->
     @include('includes.styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+    <script>
+        Pusher.logToConsole = true;
+        let pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+        });
+
+        console.log(pusher)
+    </script>
 </head>
 
 <body>
@@ -203,7 +213,7 @@
         </section><!-- End Doctors Section -->
 
         <!-- ======= Frequently Asked Questions Section ======= -->
-       @include('user.faq')
+        @include('user.faq')
         <!-- End Frequently Asked Questions Section -->
 
         <!-- ======= Gallery Section ======= -->
@@ -221,7 +231,7 @@
 
 
     @include('includes.scripts')
-  @yield('scripts')
+    @yield('scripts')
 </body>
 
 </html>

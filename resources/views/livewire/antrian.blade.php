@@ -1,23 +1,18 @@
 @script
     <script>
         let channel = pusher.subscribe('antrian');
-        channel.bind('antrian-store', function(data) {
+        channel.bind('antrian-diambil', function(data) {
             console.log('Data received:', data);
-            if (data && data.nama && data.no_antrian && data.status && data.jenis_antrian && data.kuota !==
-                undefined) {
 
-                toastr.success(
-                    'Nama Lengkap : ' + data.nama + '<br>POLI: ' + data.jenis_antrian,
-                    'Pasien Telah Mendaftar Nomor Antrian', {
-                        timeOut: 0,
-                        extendedTimeOut: 0,
-                    }
-                );
+            toastr.success(
+                'Nama Lengkap : ' + data.nama + '<br>POLI: ' + data.jenis_antrian,
+                'Pasien Telah Mendaftar Nomor Antrian', {
+                    timeOut: 0,
+                    extendedTimeOut: 0,
+                }
+            );
 
-                $wire.$refresh()
-            } else {
-                console.error('Invalid data structure received:', data);
-            }
+            $wire.$refresh()
         });
     </script>
 @endscript
@@ -26,9 +21,6 @@
 <div class="card text-nowrap">
     <div class="card-header d-flex justify-content-between align-items-center">
         <div class="header-title">
-            {{--  @if ($antrian->jenis_antrian)
-            <h4 class="mb-0">Daftar Antrian Poli {{ strtoupper($antrian[0]->jenis_antrian) }}</h4>
-            @endif --}}
             @if (!empty($daftarAntrian) && count($daftarAntrian) > 0)
                 <h4 class="mb-0">Daftar Antrian Poli {{ strtoupper($daftarAntrian[0]->jenis_antrian) }}</h4>
             @else
@@ -53,7 +45,7 @@
             @endif
             <button type="submit" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal">Tambah
                 Data</button>
-          
+
         </div>
     </div>
     <div class="card-body text-nowrap">

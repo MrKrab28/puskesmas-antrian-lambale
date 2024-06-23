@@ -39,8 +39,6 @@ class AntrianController extends Controller
             'gigi' => Cache::get('antrian_gigi_tutup', false),
         ];
 
-        // $antrian = Antrian::all();
-
         return view('admin.antrian', compact([
             'data_antrian',  'antrian_tutup'
         ]));
@@ -87,13 +85,9 @@ class AntrianController extends Controller
     public function status(Antrian $antrian, Request $request)
     {
         $jenisAntrian = $antrian->jenis_antrian;
-        $panggilan_terakhir = Antrian::where('jenis_antrian', $jenisAntrian)
-            ->where('status', 'dipanggil')
-            ->first();
-
 
         $dipanggil = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'dipanggil')->first();
-        // dd(Carbon::parse($dipanggil->batas_waktu));
+
         if ($dipanggil) {
             if (Carbon::parse($dipanggil->batas_waktu) <= Carbon::now()) {
                 $dipanggil->status = 'selesai';
@@ -106,7 +100,7 @@ class AntrianController extends Controller
                     $menunggu->update();
 
                     // Menyiarkan event AntrianUpdated dengan nomor antrian yang dipanggil
-                    broadcast(new AntrianUpdated($menunggu))->toOthers();
+                    broadcast(new AntrianUpdated());
                 }
             } else {
                 return redirect()->back()->with('error', 'mohon di tungu ya ');
@@ -118,7 +112,7 @@ class AntrianController extends Controller
                 $menunggu->update();
 
                 // Menyiarkan event AntrianUpdated dengan nomor antrian yang dipanggil
-                broadcast(new AntrianUpdated($menunggu))->toOthers();
+                broadcast(new AntrianUpdated());
             }
         }
 
@@ -135,9 +129,7 @@ class AntrianController extends Controller
 
         Cache::put('antrian_' . $jenisAntrian . '_tutup', true, now()->addDays(1));
 
-        broadcast(new AntrianUpdated(null, true, $jenisAntrian))->toOthers();
-
-        // return response()->json(['success' => true, 'message' => 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil ditutup']);
+        broadcast(new AntrianUpdated());
 
         return redirect()->back()->with('success', 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil ditutup');
     }
@@ -151,9 +143,8 @@ class AntrianController extends Controller
 
         Cache::forget('antrian_' . $jenisAntrian . '_tutup');
 
-        broadcast(new AntrianUpdated(null, false, $jenisAntrian))->toOthers();
+        broadcast(new AntrianUpdated());
 
         return redirect()->back()->with('success', 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil dibuka kembali');
-        // return response()->json(['success' => true, 'message' => 'Antrian ' . strtoupper($jenisAntrian) . ' berhasil dibuka kembali']);
     }
 }
