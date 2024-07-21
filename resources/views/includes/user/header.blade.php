@@ -16,7 +16,7 @@
                     <ul>
                         <li><a href="#"><span class="ri-account-circle-line" > PROFILE</span></a></li>
                         <li><button onclick="document.location.href='{{ route('user-logout') }}' " type="button"
-                                class="btn btn-primary text-white mx-3"><i class=" ti ti-logout"></i>Logout</button></li>
+                                class="btn btn-outline-primary mx-3 mt-2 d-block"><i class=" ti ti-logout"></i>Logout</button></li>
                     </ul>
                 </li>
             </ul>

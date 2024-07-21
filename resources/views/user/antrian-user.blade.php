@@ -15,7 +15,7 @@
 
             @php
 
-                $antrian = auth()->user()->antrian;
+                $antrian = auth()->user()->antrian()->whereIn('status', ['menunggu', 'dipanggil'])->whereDate('created_at', Carbon\Carbon::today())->first();
 
 
             @endphp
