@@ -43,6 +43,9 @@ Route::group(['middleware' =>  'auth:admin'], function () {
 
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('admin/profile/{admin}', [AdminAuthController::class, 'edit'])->name('admin-profile.edit');
+    Route::put('admin/profile/update/{admin}', [AdminAuthController::class, 'update'])->name('admin-profile.update');
+
     // PEGAWAI
     Route::get('pegawai', [AdminPegawaiController::class, 'index'])->name('pegawai-index');
     Route::post('pegawai/add', [AdminPegawaiController::class, 'store'])->name('pegawai-store');
@@ -91,6 +94,10 @@ Route::group(['middleware' =>  'auth:user'], function () {
     Route::get('antrian', [UserAntrianController::class, 'index'])->name('user-antrian');
     Route::get('antrian/show/{jenis}', [UserAntrianController::class, 'showAntrian'])->name('user-antrian.show');
     Route::post('antrian/add/{jenis_antrian}', [UserAntrianController::class, 'store'])->name('user-antrian.store');
+
+
+    Route::get('user/profile/{user}', [UserController::class, 'edit'])->name('profile');
+    Route::put('user/profile/update/{user}', [UserController::class, 'update'])->name('profile-update');
 });
 
 Route::get('register', [UserController::class, 'showRegister'])->name('user-register')->middleware('guest');

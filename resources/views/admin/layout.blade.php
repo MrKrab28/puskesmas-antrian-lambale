@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Modernize Free</title>
+    <title>Puskesmas Lambale</title>
     {{-- <link rel="shortcut icon" href="{{ asset('assets/images/logos/favicon.png') }}" /> --}}
     @include('includes.admin.styling.styles')
     @stack('modals')

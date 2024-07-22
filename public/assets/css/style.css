@@ -791,10 +791,14 @@ section {
 }
 
 .about .video-box {
-  background: url("../img/puskesmas_lamballle.jpg") center center no-repeat;
-  background-size: cover;
+    background-image: url("../img/lambale33.jpg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: top;
   min-height: 500px;
   border-radius: 5%;
+  margin-top: 300px;
+  margin-bottom: 0px;
 }
 
 .about .play-btn {

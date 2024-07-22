@@ -38,7 +38,7 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $jadwal->dokter->nama }}</td>
                                             <td>{{ strtoupper($jadwal->jenis_antrian) }}</td>
-                                            <td>{{ $jadwal->tanggal }}</td>
+                                            <td>{{ Carbon\Carbon::parse($jadwal->tanggal)->isoFormat('DD MMMM YYYY')   }}</td>
 
                                             </td>
 
@@ -89,22 +89,29 @@
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama Spesialis</label>
 
-                            <select class="form-select js-choice" name="id_dokter" id="" required>
+                            <select class="form-select" name="id_dokter" id="dokter" required>
                                 <option value="">pilih</option>
                                 @foreach ($daftar_dokter as $dokter)
-                                    <option value="{{ $dokter->id }}">{{ $dokter->nama }}</option>
+                                    <option value="{{ $dokter->id }}"  data-jenis="{{ strtoupper($dokter->spesialis) }}">{{ $dokter->nama }}</option>
                                 @endforeach
                             </select>
+
                         </div>
                         <div class="mb-3">
-                            <label for="nama" class="form-label">Spesialis</label>
+                            <label for="no_hp" class="form-label">Spesialis</label>
+                            <input class="form-control" type="text" id="jenis_antrian" name="jenis_antrian" readonly value="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nama" class="form-label">Tanggal</label>
+                            <input type="date" class="form-control" name="tanggal">
+                            {{-- <label for="nama" class="form-label">Spesialis</label>
 
                             <select class="form-select js-choice" name="jenis_antrian" id="" required>
                                 <option value="">pilih</option>
                                     <option value="gigi" >GIGI</option>
                                     <option value="kia" >KIA</option>
                                     <option value="umum" >UMUM</option>
-                            </select>
+                            </select> --}}
                         </div>
                         {{-- <div class="mb-3">
                             <label for="spesialis" class="form-label">spesialis</label>
@@ -126,6 +133,13 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelector('#dokter').addEventListener('change', function() {
+            console.log(this.options)
+            document.querySelector('#jenis_antrian').value = this.options[this.selectedIndex].getAttribute('data-jenis')
+
+        })
+    </script>
 @endpush
 @push('styles')
     @include('includes.datatables.styles')
@@ -161,16 +175,16 @@
             });
         }
 
-             document.addEventListener('DOMContentLoaded', function() {
-             var userSelect = document.getElementById('user');
-             var namaInput = document.getElementById('nama');
+        document.addEventListener('DOMContentLoaded', function() {
+            var userSelect = document.getElementById('user');
+            var namaInput = document.getElementById('nama');
 
-             userSelect.addEventListener('change', function() {
-                 var selectedOption = this.options[this.selectedIndex];
-                 var nama = selectedOption.dataset.nama;
+            userSelect.addEventListener('change', function() {
+                var selectedOption = this.options[this.selectedIndex];
+                var nama = selectedOption.dataset.nama;
 
-                 namaInput.value = nama;
-             });
-         });
+                namaInput.value = nama;
+            });
+        });
     </script>
 @endpush

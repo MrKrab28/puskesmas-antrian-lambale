@@ -14,7 +14,7 @@
                 <li class="dropdown"><span class="ri-user-line">{{ auth()->user()->nama }}</span> <i
                             class="bi bi-chevron-down"></i>
                     <ul>
-                        <li><a href="#"><span class="ri-account-circle-line" > PROFILE</span></a></li>
+                        <li><a href="{{ route('profile', auth()->user()->id) }}"><span class="ri-account-circle-line" > PROFILE</span></a></li>
                         <li><button onclick="document.location.href='{{ route('user-logout') }}' " type="button"
                                 class="btn btn-outline-primary mx-3 mt-2 d-block"><i class=" ti ti-logout"></i>Logout</button></li>
                     </ul>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Antrian;
 
@@ -34,6 +35,22 @@ class AuthController extends Controller
         }
         return redirect()->back()->with('failed', 'Gagal Login, Password Atau Email Salah');
 
+    }
+
+    public function edit(Admin $admin){
+        return view('admin.profile-admin-edit', compact('admin'));
+    }
+
+    public function update(Admin $admin, Request $request){
+        $admin = Admin::find($admin->id);
+        $admin->email = $request->email;
+        $admin->nama = $request->nama;
+        if($request->password){
+
+            $admin->password = bcrypt($request->password);
+        }
+        $admin->update();
+        return redirect()->back()->with('success', 'Berhasil Mengbuah Data Profile Admin');
     }
 
     public function logout(){
