@@ -42,7 +42,7 @@
                         Remeber this Device
                       </label>
                     </div> --}}
-                <a class="text-primary  fw-bold" href="./index.html">Lupa Password ?</a>
+                
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-3 mt-2 rounded-2">LOGIN</button>
                     <span class="mb-3 align-items-end" style="align-items: left">Belum Punya Akun ? <a class="text-primary fw-bold" href="{{ route('user-register') }}">Register</a></span>
