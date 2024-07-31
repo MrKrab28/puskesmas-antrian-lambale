@@ -38,8 +38,6 @@
                         $menunggu = $daftarAntrian->where('status', 'menunggu')->first();
                     @endphp
 
-
-
                     <button id="nextAntrianBtn" class="btn btn-dark">Next Antrian</button>
                 </form>
             @endif
@@ -58,16 +56,20 @@
                         <th>Nama Lengkap</th>
                         <th>No Antrian</th>
                         <th>Status </th>
-                        <th>Waktu Panggil </th>
+                        <th>Waktu Panggil</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($daftarAntrian as $antrian)
+                    @php
+                        $antrianSebelumnya = null;
+                    @endphp
+                    @forelse ($daftarAntrian as $antrian)
                         <tr data-jenis-antrian={{ $antrian->jenis_antrian }}>
 
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $antrian->user->nama }}</td>
-                            <td>{{ strtoupper(Str::substr($antrian->jenis_antrian, 0, 1)) }}-{{ $antrian->no_antrian }}
+                            <td>
+                                {{ strtoupper(Str::substr($antrian->jenis_antrian, 0, 1)) }}-{{ $antrian->no_antrian }}
                             </td>
                             <td>
                                 @if ($antrian->status == 'menunggu')
@@ -84,10 +86,43 @@
                                 @endif
                             </td>
                             <td>
-                                {{ Carbon\Carbon::parse($antrian->batas_waktu)->isoFormat('HH:mm') }}
+                                @if ($antrianSebelumnya)
+                                    @if ($antrian->status == 'dipanggil')
+                                        <form action="{{ route('admin-antrian.skip', $antrian->jenis_antrian) }}"
+                                            method="post">
+                                            @method('PUT')
+                                            @csrf
+                                            <button id="skipAntrianBtn" class="btn btn-danger btn-sm">Skip</button>
+                                        </form>
+                                    @elseif ($antrian->status == 'selesai')
+                                        -
+                                    @else
+                                        {{ Carbon\Carbon::parse($antrianSebelumnya->batas_waktu)->isoFormat('HH:mm') }}
+                                    @endif
+                                @else
+                                    @if ($antrian->status == 'selesai')
+                                        -
+                                    @elseif($antrian->status == 'dipanggil')
+                                        <form action="{{ route('admin-antrian.skip', $antrian->jenis_antrian) }}"
+                                            method="post">
+                                            @method('PUT')
+                                            @csrf
+                                            <button id="skipAntrianBtn" class="btn btn-danger btn-sm">Skip</button>
+                                        </form>
+                                    @else
+                                        Sekarang
+                                    @endif
+                                @endif
                             </td>
                         </tr>
-                    @endforeach
+                        @php
+                            $antrianSebelumnya = $antrian;
+                        @endphp
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Tidak ada antrian</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
 

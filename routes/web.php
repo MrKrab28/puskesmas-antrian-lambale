@@ -66,6 +66,7 @@ Route::group(['middleware' =>  'auth:admin'], function () {
     Route::get('admin-antrian', [AdminAntrianController::class, 'index'])->name('admin-antrian');
     route::post('add/admin-antrian', [AdminAntrianController::class, 'store'])->name('admin-antrian.store');
     // Route::put('antrian/{antrian}/ubah-status', [AdminAntrianController::class, 'status'])->name('ubah-status-antrian');
+    Route::put('antrian/skip/{antrian:jenis_antrian}', [AdminAntrianController::class, 'skip'])->name('admin-antrian.skip');
     Route::put('antrian/update/{antrian:jenis_antrian}', [AdminAntrianController::class, 'status'])->name('admin-antrian.updateStatus');
 
 

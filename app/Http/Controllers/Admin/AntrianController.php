@@ -20,8 +20,6 @@ class AntrianController extends Controller
         if ($jenis_antrian) {
             $antrianByJenis = Antrian::where('jenis_antrian', $jenis_antrian)->whereDate('created_at', Carbon::today())->get();
 
-
-
             return view('admin.jenis-antrian', [
                 'daftarUser' => User::doesntHave('antrian')->get(),
                 'daftarAntrian' => $antrianByJenis,
@@ -82,11 +80,50 @@ class AntrianController extends Controller
         return redirect()->back()->with('success', 'Nomor Antrian Berhasil Dibuat');
     }
 
+    public function skip(Antrian $antrian)
+    {
+        $jenisAntrian = $antrian->jenis_antrian;
+
+
+        $dipanggil = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'dipanggil')
+            ->whereDate('created_at', Carbon::today())->first();
+        $dipanggil->status = 'selesai';
+        $dipanggil->update();
+
+        $daftarTunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')
+            ->whereDate('created_at', Carbon::today())->get();
+
+        if ($daftarTunggu) {
+            $penungguSebelumnya = null;
+
+            foreach ($daftarTunggu as $menunggu) {
+                if ($penungguSebelumnya) {
+                    $waktu = Carbon::parse($penungguSebelumnya->batas_waktu)->addMinutes(10);
+                    $menunggu->batas_waktu = $waktu;
+                    $menunggu->update();
+                } else {
+                    $waktu = Carbon::parse(now())->addMinutes(10);
+
+                    $menunggu->status = 'dipanggil';
+                    $menunggu->batas_waktu = $waktu;
+                    $menunggu->update();
+                }
+
+                $penungguSebelumnya = $menunggu;
+            }
+
+            // Menyiarkan event AntrianUpdated dengan nomor antrian yang dipanggil
+            broadcast(new AntrianUpdated());
+        }
+        return redirect()->back()->with('success', 'Skip Antrian berhasil');
+    }
+
     public function status(Antrian $antrian, Request $request)
     {
         $jenisAntrian = $antrian->jenis_antrian;
 
-        $dipanggil = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'dipanggil')->first();
+        $dipanggil = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'dipanggil')
+            ->whereDate('created_at', Carbon::today())->first();
 
         if ($dipanggil) {
             if (Carbon::parse($dipanggil->batas_waktu) <= Carbon::now()) {
@@ -94,7 +131,8 @@ class AntrianController extends Controller
                 $dipanggil->update();
 
 
-                $menunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')->first();
+                $menunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')
+                    ->whereDate('created_at', Carbon::today())->first();
                 if ($menunggu) {
                     $menunggu->status = 'dipanggil';
                     $menunggu->update();
@@ -106,7 +144,8 @@ class AntrianController extends Controller
                 return redirect()->back()->with('error', 'mohon di tungu ya ');
             }
         } else {
-            $menunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')->first();
+            $menunggu = Antrian::where('jenis_antrian', $jenisAntrian)->where('status', 'menunggu')
+                ->whereDate('created_at', Carbon::today())->first();
             if ($menunggu) {
                 $menunggu->status = 'dipanggil';
                 $menunggu->update();

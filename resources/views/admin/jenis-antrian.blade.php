@@ -250,6 +250,7 @@
         }
 
         function formatTime(time) {
+
             var date = new Date(time);
             var hours = date.getHours();
             var minutes = date.getMinutes();
