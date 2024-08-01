@@ -39,12 +39,16 @@
                     </div>
                 </div>
                 <div style="font-size: 15px;text-align:center" class="mb-0">
-
+                    @if ($antrian->created_at != $antrian->updated_at)
+                    <div class="alert alert-info">
+                        <p class="m-0"> Antrian Anda Dipercepat Dikarenakan Ada Antrian Yang Telah Dilewati </p>
+                    </div>
+                    @endif
 
                     <h6>Catatan :</h6> <span style="font-size: 15px;text-align:center">*Nomor Antrian Anda Diperkirakan
                         Akan
                         Dipanggil Pada Pukul <b>
-                            {{ Carbon\Carbon::parse($antrian->batas_waktu)->isoFormat('HH:mm') }}</b>
+                            {{ Carbon\Carbon::parse($antrian->batas_waktu)->subMinutes(10)->isoFormat('HH:mm')  }}</b>
                         WITA</span><br>
                     <span style="">Mohon Untuk Berada Di Puskesmas 30 Menit Sebelum Waktu
                         Pemanggilan Antrian Anda </span>
