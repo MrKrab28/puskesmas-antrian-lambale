@@ -31,12 +31,12 @@
                                     <div class="mb-2">
                                         <label for="nama" class="form-label">Nama Lengap</label>
                                         <input type="text" class="form-control" id="nama" name="nama"
-                                            aria-describedby="emailHelp">
+                                            aria-describedby="emailHelp" required>
                                     </div>
                                     <div class="mb-2">
                                         <label for="nik" class="form-label">NIK KTP</label>
-                                        <input type="text" class="form-control" id="nik" name="nik"
-                                            aria-describedby="emailHelp">
+                                        <input type="text"  maxlength="16" minlength="16" class="form-control" id="nik" name="nik"
+                                            aria-describedby="emailHelp" required>
                                     </div>
                                     <div class="mb-2">
                                         <label for="exampleInputEmail1" class="form-label">Email</label>
