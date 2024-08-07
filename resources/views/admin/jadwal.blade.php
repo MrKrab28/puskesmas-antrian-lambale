@@ -43,10 +43,10 @@
                                             </td>
 
                                             <td class="text-center">
-                                                <button class="btn btn-primary btn-sm"
+                                                {{-- <button class="btn btn-primary btn-sm"
                                                     onclick="document.location.href = '{{ route('admin-jadwal.edit', $jadwal->id) }}'">
                                                     <i class="ti ti-pencil"></i>
-                                                </button>
+                                                </button> --}}
 
                                                 <form id="formDelete{{ $jadwal->id }}"
                                                     action="{{ route('admin-jadwal.delete', $jadwal->id) }}"
@@ -57,7 +57,7 @@
                                                 </form>
                                                 <button type="submit" onclick="deleteData({{ $jadwal->id }})"
                                                     class="btn btn-danger btn-sm">
-                                                    <i class=" ti ti-trash"></i>
+                                                    <i class=" ti ti-trash"></i> Hapus
                                                 </button>
 
                                             </td>
