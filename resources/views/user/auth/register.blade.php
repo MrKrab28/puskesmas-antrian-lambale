@@ -29,7 +29,7 @@
                                 <form action="{{ route('user-register.store') }}" method="POST">
                                     @csrf
                                     <div class="mb-2">
-                                        <label for="nama" class="form-label">Nama Lengap</label>
+                                        <label for="nama" class="form-label">Nama Lengkap</label>
                                         <input type="text" class="form-control" id="nama" name="nama"
                                             aria-describedby="emailHelp" required>
                                     </div>
