@@ -30,15 +30,15 @@ use App\Models\Admin;
 // });
 
 // Admin Auth
-Route::get('/', [AdminAuthController::class, 'login'])->name('login')->middleware('guest');
+Route::get('/login-user', [AdminAuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('authenticate', [AdminAuthController::class, 'authenticate'])->name('admin-authenticate');
 Route::post('register', [AdminAuthController::class, 'register'])->name('register');
 Route::get('logout/user', [AdminAuthController::class, 'logoutUser'])->name('user-logout')->middleware('auth:user');
 
 
 
-
 Route::group(['middleware' =>  'auth:admin'], function () {
+    Route::get('/monitor', [UserAntrianController::class, 'monitor'])->name('monitor');
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin-logout');
 
     Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -91,6 +91,9 @@ Route::group(['middleware' =>  'auth:admin'], function () {
     Route::post('/admin/tutup-antrian/{jenisAntrian}', [AdminAntrianController::class, 'tutupAntrian'])->name('admin.tutup-antrian');
     Route::post('/admin/buka-antrian/{jenisAntrian}', [AdminAntrianController::class, 'bukaAntrian'])->name('admin.buka-antrian');
 });
+
+
+Route::get('/', [UserAntrianController::class, 'index'])->name('user-guest-antrian')->middleware(['guest:admin', 'guest:user']);
 Route::group(['middleware' =>  'auth:user'], function () {
     Route::get('antrian', [UserAntrianController::class, 'index'])->name('user-antrian');
     Route::get('antrian/show/{jenis}', [UserAntrianController::class, 'showAntrian'])->name('user-antrian.show');

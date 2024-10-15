@@ -94,4 +94,8 @@ class AntrianController extends Controller
         return view('user.antrian')->with('currentAntrian', $currentAntrian)
             ->with('jenis', $jenis);;
     }
+
+    public function monitor(){
+        return view('user.monitor');
+    }
 }

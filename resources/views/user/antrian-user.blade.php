@@ -11,6 +11,9 @@
                 </div>
             </div>
 
+           @if (auth()->user())
+
+
 
 
             @php
@@ -54,6 +57,7 @@
                         Pemanggilan Antrian Anda </span>
                 </div>
                 {{-- @endforeach --}}
+            @endif
             @endif
 
             <div class="col-lg-4 col-md-6 d-flex align-items-stretch">

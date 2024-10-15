@@ -67,6 +67,34 @@
                         <span class="hide-menu">Antrian</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('monitor') }}" aria-expanded="false"
+                        onclick="event.preventDefault(); openFullscreenWindow(this.href.replace('[sub]', window.location));">
+                        <span>
+                            <i class="ti ti-device-desktop"></i>
+                        </span>
+                        <span class="hide-menu">Monitor Antrian</span>
+                    </a>
+
+                    <script>
+                        function openFullscreenWindow(url) {
+                            const width = screen.availWidth;
+                            const height = screen.availHeight;
+                            const windowFeatures =
+                                `toolbar=no,menubar=no,location=no,resizable=yes,scrollbars=yes,status=no,width=${width},height=${height}`;
+                            const newWindow = window.open(url, '_blank', windowFeatures);
+
+                            // Jika Anda ingin jendela terbuka dalam mode layar penuh, Anda bisa meminta pengguna untuk melakukannya secara manual
+                            newWindow.onload = function() {
+                                newWindow.moveTo(0, 0);
+                                newWindow.resizeTo(screen.availWidth, screen.availHeight);
+                                if (newWindow.document.body) {
+                                    newWindow.document.body.requestFullscreen();
+                                }
+                            };
+                        }
+                    </script>
+                </li>
 
 
             </ul>

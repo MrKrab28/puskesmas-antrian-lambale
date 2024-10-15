@@ -34,6 +34,8 @@
                     </ul>
                 </li> --}}
                 <li class="dropdown">
+                    @if (auth()->user())
+
                     <span class="dropdown-toggle">{{ auth()->user()->nama }} </span>
                     <ul class="dropdown-menu">
                         <li><a href="{{ route('profile', auth()->user()->id) }}"><span class="ri-account-circle-line">
@@ -42,6 +44,17 @@
                             class="btn btn-outline-primary mx-3 mt-2 d-block"><i
                                 class=" ti ti-logout"></i>Logout</button></li>
                     </ul>
+                    @else
+                    <span class="dropdown-toggle">Login / Register</span>
+                    <ul class="dropdown-menu">
+                        <li><button onclick="document.location.href='{{ route('login') }}' " type="button"
+                            class="btn btn-outline-success mx-3 mt-2 d-block"><i
+                                class=" ti ti-logout"></i>Login</button></li>
+                        <li><button onclick="document.location.href='{{ route('user-register.store') }}' " type="button"
+                            class="btn btn-outline-primary mx-3 mt-2 d-block"><i
+                                class=" ti ti-logout"></i>Buat Akun</button></li>
+                    </ul>
+                    @endif
                 </li>
             </ul>
 
